@@ -7,29 +7,10 @@ TDWorld world;
 void Setup(AlxWindow* w){
     ResizeAlxFont(10,10);
 
-    if(Files_isFile("./data/World0.dtworld")){
-        world = TDWorld_Load("./data/World0.dtworld",(Sprite[]){
-            Sprite_Load("./assets/Track_Right.png"),
-            Sprite_Load("./assets/Track_Top.png"),
-            Sprite_Load("./assets/Track_Right_Pedest.png"),
-            Sprite_Load("./assets/Track_Top_Pedest.png"),
-            Sprite_Load("./assets/Track_Right_Curve.png"),
-            Sprite_Load("./assets/Track_Top_Curve.png"),
-            Sprite_Load("./assets/Track_Left_Curve.png"),
-            Sprite_Load("./assets/Track_Down_Curve.png"),
-            Sprite_Load("./assets/Track_Right_Cross.png"),
-            Sprite_Load("./assets/Track_Top_Cross.png"),
-            Sprite_Load("./assets/Track_Left_Cross.png"),
-            Sprite_Load("./assets/Track_Down_Cross.png"),
-            Sprite_Load("./assets/Track_Middle.png"),
-            Sprite_Null()
-        });
+    if(Files_isFile("./data/World0.tdworld")){
+        world = TDWorld_Load("./data/World0.tdworld",Sprite_Load("./assets/City_Roads.png"));
     }else{
-        world = TDWorld_New(100,100,(Sprite[]){
-            Sprite_Load("./assets/Track_Right.png"),
-            Sprite_Load("./assets/Track_Top.png"),
-            Sprite_Null()
-        });
+        world = TDWorld_New(100,100,Sprite_Load("./assets/City_Roads.png"));
     }
     // (TDEngine*)TDEngine_Gasoline_New(6,100.0f,60.0f)
     // (TDEngine*)TDEngine_Diesel_New(6,100.0f,60.0f)
@@ -49,16 +30,27 @@ void Update(AlxWindow* w){
             const unsigned int tx = (unsigned int)m_world.x;
             const unsigned int ty = (unsigned int)m_world.y;
             const unsigned int index = ty * world.width + tx;
-            world.world[index] = (world.world[index] + 1) % (world.sprites.size + 1);
+            
+            if(world.world[index] < 255U)
+                world.world[index]++;
         }
-    }
-    if(Stroke(ALX_MOUSE_R).PRESSED){
+    }else if(Stroke(ALX_MOUSE_R).PRESSED){
         const Vec2 m_world = TransformedView_ScreenWorldPos(&world.tv,(Vec2){ (float)w->MouseX,(float)w->MouseY });
         if(m_world.x >= 0 && m_world.x < (int)world.width && m_world.y >= 0 && m_world.y < (int)world.height){
             const unsigned int tx = (unsigned int)m_world.x;
             const unsigned int ty = (unsigned int)m_world.y;
             const unsigned int index = ty * world.width + tx;
-            world.world[index] = 0;
+            
+            if(world.world[index] > 0U)
+                world.world[index]--;
+        }
+    }else if(Stroke(ALX_MOUSE_M).PRESSED){
+        const Vec2 m_world = TransformedView_ScreenWorldPos(&world.tv,(Vec2){ (float)w->MouseX,(float)w->MouseY });
+        if(m_world.x >= 0 && m_world.x < (int)world.width && m_world.y >= 0 && m_world.y < (int)world.height){
+            const unsigned int tx = (unsigned int)m_world.x;
+            const unsigned int ty = (unsigned int)m_world.y;
+            const unsigned int index = ty * world.width + tx;
+            world.world[index] = 0U;
         }
     }
 
@@ -76,7 +68,7 @@ void Update(AlxWindow* w){
     
     TDCar_Update(&world.car,w->ElapsedTime);
     
-    Clear(LIGHT_BLUE);
+    Clear(BLUE);
 
     //TDCar_Render(WINDOW_STD_ARGS,&car);
 
@@ -87,7 +79,7 @@ void Update(AlxWindow* w){
     TDCar_RenderEngine(WINDOW_STD_ARGS,&world.car,800.0f,GetHeight() - 400.0f,400.0f);
 }
 void Delete(AlxWindow* w){
-    TDWorld_Save(&world,"./data/World0.dtworld");
+    TDWorld_Save(&world,"./data/World0.tdworld");
     TDWorld_Free(&world);
 }
 
