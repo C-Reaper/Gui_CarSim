@@ -18,9 +18,9 @@ void Setup(AlxWindow* w){
     TDWorld_LoadCar(&world,0.0f,0.0f,"./assets/Car_Green_Fast.png",AlxFont_MAKE_HIGH(16,32),(TDEngine*)TDEngine_Gasoline_New(6,100.0f,60.0f));
 }
 void Update(AlxWindow* w){
-    if(Stroke(ALX_MOUSE_L).PRESSED){
-        const Vec2 m_world = { world.car.pos.x,-world.car.pos.y };
-        
+    const Vec3D m_world = TDWorld_ScreenWorld(&world,w->Width,w->Height,w->MouseX,w->MouseY);
+
+    if(Stroke(ALX_MOUSE_L).PRESSED){        
         if(m_world.x >= 0 && m_world.x < (int)world.width && m_world.y >= 0 && m_world.y < (int)world.height){
             const unsigned int tx = (unsigned int)m_world.x;
             const unsigned int ty = (unsigned int)m_world.y;
@@ -30,8 +30,6 @@ void Update(AlxWindow* w){
                 world.world[index]++;
         }
     }else if(Stroke(ALX_MOUSE_R).PRESSED){
-        const Vec2 m_world = { world.car.pos.x,-world.car.pos.y };
-        
         if(m_world.x >= 0 && m_world.x < (int)world.width && m_world.y >= 0 && m_world.y < (int)world.height){
             const unsigned int tx = (unsigned int)m_world.x;
             const unsigned int ty = (unsigned int)m_world.y;
@@ -41,8 +39,6 @@ void Update(AlxWindow* w){
                 world.world[index]--;
         }
     }else if(Stroke(ALX_MOUSE_M).PRESSED){
-        const Vec2 m_world = { world.car.pos.x,-world.car.pos.y };
-        
         if(m_world.x >= 0 && m_world.x < (int)world.width && m_world.y >= 0 && m_world.y < (int)world.height){
             const unsigned int tx = (unsigned int)m_world.x;
             const unsigned int ty = (unsigned int)m_world.y;
