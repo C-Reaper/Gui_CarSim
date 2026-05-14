@@ -55,7 +55,7 @@ void Update(AlxWindow* w){
     if(Stroke(ALX_KEY_W).DOWN)          TDCar_Interact(&world.car,TDENGINE_GASOLINE_INTERACT_GASDOWN,(float[]){ 1.0f });
     else                                TDCar_Interact(&world.car,TDENGINE_GASOLINE_INTERACT_GASUP,NULL);
     
-    if(Stroke(ALX_KEY_S).DOWN)          TDCar_Break(&world.car,0.98f);
+    if(Stroke(ALX_KEY_S).DOWN)          TDCar_Break(&world.car,2.0f * w->ElapsedTime);
     if(Stroke(ALX_KEY_A).DOWN)          TDCar_Turn(&world.car, F32_PI * w->ElapsedTime);
     if(Stroke(ALX_KEY_D).DOWN)          TDCar_Turn(&world.car,-F32_PI * w->ElapsedTime);
     
