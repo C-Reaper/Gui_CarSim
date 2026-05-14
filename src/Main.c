@@ -16,7 +16,7 @@ void Setup(AlxWindow* w){
     // (TDEngine*)TDEngine_Diesel_New(6,100.0f,60.0f)
     // (TDEngine*)TDEngine_Electric_New(100.0f,10.0f)
 
-    TDWorld_LoadCar(&world,0.0f,0.0f,"./assets/Car_Green_Fast.png",AlxFont_MAKE_HIGH(16,32),(TDEngine*)TDEngine_Gasoline_New(6,100.0f,60.0f));
+    TDWorld_LoadCar(&world,5.0f,5.0f,"./assets/Car_Green_Fast.png",AlxFont_MAKE_HIGH(16,32),(TDEngine*)TDEngine_Gasoline_New(6,100.0f,60.0f));
     world.ai = ASprite_New(1.0f,"./assets/Car_Green_Fast.png");
 }
 void Update(AlxWindow* w){
@@ -62,17 +62,13 @@ void Update(AlxWindow* w){
     if(Stroke(ALX_KEY_R).PRESSED)       TDCar_Interact(&world.car,TDENGINE_GASOLINE_INTERACT_GEARUP,NULL);
     if(Stroke(ALX_KEY_F).PRESSED)       TDCar_Interact(&world.car,TDENGINE_GASOLINE_INTERACT_GEARDOWN,NULL);
 
-    if(Stroke(ALX_KEY_SPACE).PRESSED){
-        Vector_Push(&world.ais,(TDAI[]){{
-            .t = 0.0f,
-            .dir = 0U,
-            .x = world.cam.p.x,
-            .y = world.cam.p.y
-        }});
-    }
+    if(Stroke(ALX_KEY_T).PRESSED)       TDCar_Drift(&world.car,1);
+    if(Stroke(ALX_KEY_T).RELEASED)      TDCar_Drift(&world.car,0);
+
+    if(Stroke(ALX_KEY_SPACE).PRESSED)   TDWorld_Spawn(&world,world.cam.p.x,world.cam.p.y);
     
-    if(Stroke(ALX_KEY_UP).DOWN)      world.zoom *= 1.01f;
-    if(Stroke(ALX_KEY_DOWN).DOWN)    world.zoom *= 0.99f;
+    if(Stroke(ALX_KEY_UP).DOWN)         world.zoom *= 1.01f;
+    if(Stroke(ALX_KEY_DOWN).DOWN)       world.zoom *= 0.99f;
     
     TDCar_Update(&world.car,w->ElapsedTime);
     TDWorld_Update(&world,w->Width,w->Height,w->ElapsedTime);
