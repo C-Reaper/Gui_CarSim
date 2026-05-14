@@ -15,7 +15,9 @@ void Setup(AlxWindow* w){
     // (TDEngine*)TDEngine_Gasoline_New(6,100.0f,60.0f)
     // (TDEngine*)TDEngine_Diesel_New(6,100.0f,60.0f)
     // (TDEngine*)TDEngine_Electric_New(100.0f,10.0f)
+
     TDWorld_LoadCar(&world,0.0f,0.0f,"./assets/Car_Green_Fast.png",AlxFont_MAKE_HIGH(16,32),(TDEngine*)TDEngine_Gasoline_New(6,100.0f,60.0f));
+    world.ai = ASprite_New(1.0f,"./assets/Car_Green_Fast.png");
 }
 void Update(AlxWindow* w){
     const Vec3D m_world = TDWorld_ScreenWorld(&world,w->Width,w->Height,w->MouseX,w->MouseY);
@@ -26,8 +28,8 @@ void Update(AlxWindow* w){
             const unsigned int ty = (unsigned int)m_world.y;
             const unsigned int index = ty * world.width + tx;
             
-            if(world.world[index] < 255U)
-                world.world[index]++;
+            if(world.world[index].type < 255U)
+                world.world[index].type++;
         }
     }else if(Stroke(ALX_MOUSE_R).PRESSED){
         if(m_world.x >= 0 && m_world.x < (int)world.width && m_world.y >= 0 && m_world.y < (int)world.height){
@@ -35,8 +37,8 @@ void Update(AlxWindow* w){
             const unsigned int ty = (unsigned int)m_world.y;
             const unsigned int index = ty * world.width + tx;
             
-            if(world.world[index] > 0U)
-                world.world[index]--;
+            if(world.world[index].type > 0U)
+                world.world[index].type--;
         }
     }else if(Stroke(ALX_MOUSE_M).PRESSED){
         if(m_world.x >= 0 && m_world.x < (int)world.width && m_world.y >= 0 && m_world.y < (int)world.height){
@@ -44,7 +46,7 @@ void Update(AlxWindow* w){
             const unsigned int ty = (unsigned int)m_world.y;
             const unsigned int index = ty * world.width + tx;
             
-            world.world[index] = 0U;
+            world.world[index].type = 0U;
         }
     }
 
@@ -59,11 +61,21 @@ void Update(AlxWindow* w){
 
     if(Stroke(ALX_KEY_R).PRESSED)       TDCar_Interact(&world.car,TDENGINE_GASOLINE_INTERACT_GEARUP,NULL);
     if(Stroke(ALX_KEY_F).PRESSED)       TDCar_Interact(&world.car,TDENGINE_GASOLINE_INTERACT_GEARDOWN,NULL);
+
+    if(Stroke(ALX_KEY_SPACE).PRESSED){
+        Vector_Push(&world.ais,(TDAI[]){{
+            .t = 0.0f,
+            .dir = 0U,
+            .x = world.cam.p.x,
+            .y = world.cam.p.y
+        }});
+    }
     
     if(Stroke(ALX_KEY_UP).DOWN)      world.zoom *= 1.01f;
     if(Stroke(ALX_KEY_DOWN).DOWN)    world.zoom *= 0.99f;
     
     TDCar_Update(&world.car,w->ElapsedTime);
+    TDWorld_Update(&world,w->Width,w->Height,w->ElapsedTime);
     
     Clear(BLUE);
 
