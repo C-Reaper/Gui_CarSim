@@ -5,13 +5,14 @@
 TDWorld world;
 
 void Setup(AlxWindow* w){
-    ResizeAlxFont(10,10);
+    ResizeAlxFont(16,16);
 
     if(Files_isFile("./data/World0.tdworld")){
         world = TDWorld_Load("./data/World0.tdworld",Sprite_Load("/home/codeleaded/Graphics/CarGame/City_Roads.png"));
     }else{
         world = TDWorld_New(100,100,Sprite_Load("/home/codeleaded/Graphics/CarGame/City_Roads.png"));
     }
+
     // (TDEngine*)TDEngine_Gasoline_New(6,100.0f,60.0f)
     // (TDEngine*)TDEngine_Diesel_New(6,100.0f,60.0f)
     // (TDEngine*)TDEngine_Electric_New(100.0f,10.0f)
@@ -77,9 +78,10 @@ void Update(AlxWindow* w){
 
     TDWorld_Render(WINDOW_STD_ARGS,&world);
 
-    TDCar_RenderSpeed(WINDOW_STD_ARGS,&world.car,200.0f,GetHeight() - 200.0f,200.0f);
-    TDCar_RenderWTN(WINDOW_STD_ARGS,&world.car,600.0f,GetHeight() - 200.0f,200.0f);
-    TDCar_RenderEngine(WINDOW_STD_ARGS,&world.car,800.0f,GetHeight() - 400.0f,400.0f);
+    const float RADIUS = 200.0f;
+    TDCar_RenderSpeed(WINDOW_STD_ARGS,&world.car,RADIUS,GetHeight() - RADIUS,RADIUS);
+    TDCar_RenderWTN(WINDOW_STD_ARGS,&world.car,GetWidth() - RADIUS,GetHeight() - RADIUS,RADIUS);
+    //TDCar_RenderEngine(WINDOW_STD_ARGS,&world.car,800.0f,GetHeight() - 400.0f,400.0f);
 }
 void Delete(AlxWindow* w){
     TDWorld_Save(&world,"./data/World0.tdworld");
